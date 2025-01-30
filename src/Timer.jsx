@@ -1,22 +1,31 @@
 import { useState } from "react";
 import { TimerControls } from "./TimerControls";
 import { Digits } from "./Digits";
+import { PresetMenu } from "./PresetMenu";
 
 export function TimerWrapper() {
-    const [preset, setPreset] = useState(30);
+    const [presetIdx, setPresetIdx] = useState(0);
     const [time, setTime] = useState(100);
-    const [active, setActive] = useState(false);
+    const [state, setState] = useState("inactive");
     const [worker, setWorker] = useState(null);
 
+    const presets = [
+        { name: "Work", duration: 25},
+        { name: "Short Break", duration: 100 }
+    ]
+
+    const presetDuration = presets[presetIdx]
     const minutes = Math.floor(time / 60);
     const seconds = Math.ceil(time % 60);
 
     function handleReset(e) {
-        setTime(preset);
+        setTime(presetDuration);
+        setState("inactive");
+        worker.terminate();
     }
 
     function handleStart(e) {
-        setActive(true);
+        setState("active");
         
         let workerURL = new URL("./worker.js", import.meta.url);
         let worker = new Worker(workerURL);
@@ -26,9 +35,8 @@ export function TimerWrapper() {
         setWorker(worker);
     }
 
-    function handleStop(e) {
-        setActive(false);
-
+    function handlePause(e) {
+        setState("paused");
         worker.terminate();
     }
 
@@ -41,10 +49,17 @@ export function TimerWrapper() {
             <Digits value={minutes} />
             <Digits value={seconds} />
             <TimerControls
-                handleStart = {handleStart}
-                handleStop = {handleStop}
+                timerState={state}
+                handleStart={handleStart}
+                handlePause={handlePause}
                 handleReset={handleReset}
             />
+            <PresetMenu
+                presets={presets}
+                presetIdx={presetIdx}
+                setPresetIdx={setPresetIdx}
+            />
+            {state}
         </div>
     )
 }
