@@ -7,10 +7,11 @@ export function PresetMenu({ presets, presetIdx, setPresetIdx }) {
                 <PresetButton
                     key={i}
                     idx={i}
-                    name={p.name}
                     presetIdx={presetIdx}
                     setPresetIdx={setPresetIdx}
-                />
+                >
+                    {p.name}
+                </PresetButton>
             )}
         </div>
     );

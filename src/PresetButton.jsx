@@ -1,10 +1,15 @@
-export function PresetButton({ idx, name, presetIdx, setPresetIdx }) {
+export function PresetButton({
+    idx,
+    presetIdx,
+    setPresetIdx,
+    children
+}) {
     return (
         <button
             disabled={idx === presetIdx}
             onClick={() => setPresetIdx(idx)}
         >
-            {name}
+            {children}
         </button>
     );
 }

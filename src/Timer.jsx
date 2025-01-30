@@ -1,7 +1,7 @@
 import { useState } from "react";
-import { TimerControls } from "./TimerControls";
 import { Digits } from "./Digits";
 import { PresetMenu } from "./PresetMenu";
+import { TimerControls } from "./TimerControls";
 
 export function TimerWrapper() {
     const [presetIdx, setPresetIdx] = useState(0);
@@ -14,7 +14,8 @@ export function TimerWrapper() {
         { name: "Short Break", duration: 100 }
     ]
 
-    const presetDuration = presets[presetIdx]
+    const presetDuration = presets[presetIdx].duration
+
     const minutes = Math.floor(time / 60);
     const seconds = Math.ceil(time % 60);
 

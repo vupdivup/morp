@@ -1,14 +1,35 @@
-export function TimerControls({ timerState, handleStart, handlePause, handleReset }) {
+import { ControlButton } from "./ControlButton"
+
+export function TimerControls({
+    timerState,
+    handleStart,
+    handlePause,
+    handleReset
+}) {
     return (
+        // todo: refactor this with objects
         <div>
-            <button
-                onClick={handleStart}
-                disabled={timerState === "active"}
+            <ControlButton
+                timerState={timerState}
+                disableStates={["active"]}
+                handleClick={handleStart}
             >
                 Start
-            </button>
-            <button onClick={handlePause}>Stop</button>
-            <button onClick={handleReset}>Reset</button>
+            </ControlButton>
+            <ControlButton
+                timerState={timerState}
+                disableStates={["inactive", "paused"]}
+                handleClick={handlePause}
+            >
+                Pause
+            </ControlButton>
+            <ControlButton
+                timerState={timerState}
+                disableStates={["active", "inactive"]}
+                handleClick={handleReset}
+            >
+                Reset
+            </ControlButton>
         </div>
     )
 }
