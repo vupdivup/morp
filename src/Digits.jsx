@@ -1,7 +1,12 @@
-export function Digits({ value }) {
+export function Digits({ time }) {
+    const minutes = Math.floor(time / 60);
+    const seconds = Math.ceil(time % 60);
+
     return (
         <div className="digits">
-            {value.toString().padStart(2, "0")}
+            {minutes.toString().padStart(2, "0")}
+            :
+            {seconds.toString().padStart(2, "0")}
         </div>
     )
 }

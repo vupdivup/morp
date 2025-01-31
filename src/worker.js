@@ -6,6 +6,5 @@ let tickCount = 0;
 setInterval(tick, 1000);
 
 function tick() {
-    console.log("posting");
     postMessage(null);
 }
