@@ -1,4 +1,4 @@
-import { TimerWrapper } from "./Timer.jsx";
+import { TimerWrapper } from "/src/components/Timer.jsx";
 
 export function App() {
     return (

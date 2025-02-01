@@ -1,6 +1,7 @@
 import { useEffect, useState, useRef } from "react";
 import { Digits } from "./Digits";
 import { TimerControls } from "./TimerControls";
+import { TimerVisual } from "./TimerVisual";
 
 export function TimerWrapper() {
     const [queueIdx, setQueueIdx] = useState(0)
@@ -16,7 +17,7 @@ export function TimerWrapper() {
     )
 
     const presets = [
-        { name: "Work", duration: 2 },
+        { name: "Work", duration: 1000 },
         { name: "Short Break", duration: 3 }
     ]
 
@@ -37,7 +38,7 @@ export function TimerWrapper() {
     function start() {
         setState("active");
         
-        let workerURL = new URL("./worker.js", import.meta.url);
+        let workerURL = new URL("/src/scripts/worker.js", import.meta.url);
         let worker = new Worker(workerURL);
 
         worker.onmessage = handleMessage;
@@ -52,6 +53,7 @@ export function TimerWrapper() {
 
     function reset() {
         setState("inactive");
+        // TODO: check if this is the proper value
         setTime(preset.duration);
         workerRef.current.terminate();
     }
@@ -72,6 +74,7 @@ export function TimerWrapper() {
             {preset.name}
             <br />
             {queueIdx + 1}/{queue.length}
+            {time}
             <Digits time={time} />
             <TimerControls
                 timerState={state}
@@ -80,6 +83,8 @@ export function TimerWrapper() {
                 handleReset={reset}
             />
             {state}
+            <TimerVisual ratio={ time / preset.duration }/>
+            { time / preset.duration }
         </div>
     )
 }
