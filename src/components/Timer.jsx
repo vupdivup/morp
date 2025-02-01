@@ -4,36 +4,39 @@ import { TimerControls } from "./TimerControls";
 import { TimerVisual } from "./TimerVisual";
 
 export function TimerWrapper() {
-    const [queueIdx, setQueueIdx] = useState(0)
-    
     const [state, setState] = useState("inactive");
 
+    const [time, setTime] = useState(0);
+
+    const [queueIdx, setQueueIdx] = useState(0);
+
     const [worker, setWorker] = useState(null);
-    // ensure worker is terminated when state is changed
-    useEffect(() => {
-        return () => { worker?.terminate() }
-    },
-        [worker]
-    )
 
     const presets = [
-        { name: "Work", duration: 1000 },
-        { name: "Short Break", duration: 3 }
-    ]
+        { name: "Focus", duration: 2 },
+        { name: "Short Break", duration: 3 },
+        { name: "Long Break", duration: 4 }
+    ];
 
     // ordered list of presets in cycle
-    const queue = [0, 1, 0, 1];
+    const queue = [0, 1, 0, 2];
 
     const preset = presets[queue[queueIdx]]
 
-    const [time, setTime] = useState(preset.duration);
+    // terminate timer worker if no longer active
+    useEffect(() => {
+        if (state !== "active") worker?.terminate();
+    }, [state]);
 
-    // to provide current time value within async handlers
-    const timeRef = useRef(time);
-    useEffect(() => {timeRef.current = time}, [time]);
+    // reset time if preset is switched
+    useEffect(() => { setTime(preset.duration) }, [queueIdx]);
 
-    const workerRef = useRef(null);
-    useEffect(() => {workerRef.current = worker}, [worker]);
+    // switch preset if timer reaches 0
+    useEffect(() => {
+        if (time === 0) {
+            setQueueIdx((queueIdx + 1) % queue.length);
+        }
+    });
 
     function start() {
         setState("active");
@@ -48,34 +51,27 @@ export function TimerWrapper() {
 
     function pause() {
         setState("paused");
-        worker.terminate();
     }
 
     function reset() {
         setState("inactive");
-        // TODO: check if this is the proper value
-        setTime(preset.duration);
-        workerRef.current.terminate();
+        setQueueIdx((queueIdx + 1) % 4);
     }
 
     function handleMessage(e) {
-        let futureTime = timeRef.current - 1
-
-        setTime(futureTime);
-
-        if (futureTime === 0) {
-            setQueueIdx((queueIdx + 1) % queue.length);
-            reset();
-        }
+        setTime(time => time - 1);
     }
 
     return (
         <div className="timer">
-            {preset.name}
-            <br />
             {queueIdx + 1}/{queue.length}
-            {time}
-            <Digits time={time} />
+            <div className="timer-panel">
+                <Digits time={time} />
+                <div className="presetName">
+                    {preset.name}
+                </div>
+                <TimerVisual ratio={ time / preset.duration }/>
+            </div>
             <TimerControls
                 timerState={state}
                 handleStart={start}
@@ -83,8 +79,9 @@ export function TimerWrapper() {
                 handleReset={reset}
             />
             {state}
-            <TimerVisual ratio={ time / preset.duration }/>
             { time / preset.duration }
+            <br />{time}
+            <br />{preset.duration}
         </div>
     )
 }
