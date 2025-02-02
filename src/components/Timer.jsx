@@ -2,20 +2,21 @@ import { useEffect, useState, useRef } from "react";
 import { Digits } from "./Digits";
 import { TimerControls } from "./TimerControls";
 import { TimerVisual } from "./TimerVisual";
+import { ProgressBar } from "./ProgressBar";
 
 export function TimerWrapper() {
     const [state, setState] = useState("inactive");
 
-    const [time, setTime] = useState(0);
+    const [time, setTime] = useState(null);
 
     const [queueIdx, setQueueIdx] = useState(0);
 
     const [worker, setWorker] = useState(null);
 
     const presets = [
-        { name: "Focus", duration: 2 },
-        { name: "Short Break", duration: 3 },
-        { name: "Long Break", duration: 4 }
+        { name: "Focus", duration: 2, drawProgress: true },
+        { name: "Short Break", duration: 3, drawProgress: false },
+        { name: "Long Break", duration: 4, drawProgress: false }
     ];
 
     // ordered list of presets in cycle
@@ -36,7 +37,7 @@ export function TimerWrapper() {
         if (time === 0) {
             setQueueIdx((queueIdx + 1) % queue.length);
         }
-    });
+    }, [time]);
 
     function start() {
         setState("active");
@@ -77,6 +78,11 @@ export function TimerWrapper() {
                 handleStart={start}
                 handlePause={pause}
                 handleReset={reset}
+            />
+            <ProgressBar
+                presets={presets}
+                queue={queue}
+                queueIdx={queueIdx}
             />
             {state}
             { time / preset.duration }
