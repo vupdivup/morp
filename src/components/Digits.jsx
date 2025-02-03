@@ -1,3 +1,5 @@
+import { useEffect } from "react";
+
 export function Digits({ time }) {
     const minutes = Math.floor(time / 60);
     const seconds = Math.ceil(time % 60);

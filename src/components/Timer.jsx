@@ -1,51 +1,73 @@
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState } from "react";
+import { ThemeContext } from "../contexts/ThemeContext";
 import { Digits } from "./Digits";
-import { TimerControls } from "./TimerControls";
-import { TimerVisual } from "./TimerVisual";
 import { ProgressBar } from "./ProgressBar";
+import { TimerControls } from "./TimerControls";
+import { TimerVisual } from "./TimerRing";
 
 export function TimerWrapper() {
     const [state, setState] = useState("inactive");
-
-    const [time, setTime] = useState(null);
 
     const [queueIdx, setQueueIdx] = useState(0);
 
     const [worker, setWorker] = useState(null);
 
     const presets = [
-        { name: "Focus", duration: 2, drawProgress: true },
-        { name: "Short Break", duration: 3, drawProgress: false },
-        { name: "Long Break", duration: 4, drawProgress: false }
+        {
+            name: "Focus",
+            duration: 2,
+            drawProgress: true,
+            color1: "#972d2d",
+            color2: "#641a1a"
+        },
+        {
+            name: "Short Break",
+            duration: 3,
+            drawProgress: false,
+            color1: "#467638",
+            color2: "#205220"
+        },
+        {
+            name: "Long Break",
+            duration: 4,
+            drawProgress: false,
+            color1: "#3f5883",
+            color2: "#1d3964"
+        }
     ];
 
     // ordered list of presets in cycle
-    const queue = [0, 1, 0, 2];
+    const queue = [0, 1, 0, 1, 0, 1, 0, 2];
 
     const preset = presets[queue[queueIdx]]
+
+    const [time, setTime] = useState(preset.duration);
 
     // terminate timer worker if no longer active
     useEffect(() => {
         if (state !== "active") worker?.terminate();
     }, [state]);
 
-    // reset time if preset is switched
-    useEffect(() => { setTime(preset.duration) }, [queueIdx]);
-
-    // switch preset if timer reaches 0
+    // reattach worker message handler every render to access latest state
     useEffect(() => {
-        if (time === 0) {
-            setQueueIdx((queueIdx + 1) % queue.length);
+        if (!worker) return;
+
+        worker.addEventListener("message", handleMessage);
+        
+        return () => {
+            worker.removeEventListener("message", handleMessage);
         }
-    }, [time]);
+    });
+
+    const theme = { color1: preset.color1, color2: preset.color2 };
+
+    document.body.style.backgroundColor = theme.color1;
 
     function start() {
         setState("active");
         
         let workerURL = new URL("/src/scripts/worker.js", import.meta.url);
         let worker = new Worker(workerURL);
-
-        worker.onmessage = handleMessage;
 
         setWorker(worker);
     }
@@ -54,40 +76,46 @@ export function TimerWrapper() {
         setState("paused");
     }
 
-    function reset() {
+    function shiftPreset(i) {
+        const newQueueIdx = (queueIdx + i) % queue.length;
+        const newPreset = presets[queue[newQueueIdx]];
+
+        setQueueIdx(newQueueIdx);
+        setTime(newPreset.duration);
         setState("inactive");
-        setQueueIdx((queueIdx + 1) % 4);
     }
 
     function handleMessage(e) {
-        setTime(time => time - 1);
+        const newTime = time - 1;
+
+        if (newTime === 0) shiftPreset(1);
+        else setTime(time => newTime);
     }
 
     return (
-        <div className="timer">
-            {queueIdx + 1}/{queue.length}
-            <div className="timer-panel">
-                <Digits time={time} />
-                <div className="presetName">
-                    {preset.name}
+        <ThemeContext.Provider value={theme}>
+            <div className="timer">
+                <div className="timer-face">
+                    <Digits time={time} />
+                    <div className="presetName">
+                        {preset.name}
+                    </div>
+                    <ProgressBar
+                        presets={presets}
+                        queue={queue}
+                        queueIdx={queueIdx}
+                    />
+                    <TimerVisual ratio={ time / preset.duration }/>
                 </div>
-                <TimerVisual ratio={ time / preset.duration }/>
+                <TimerControls
+                    timerState={state}
+                    queueIdx={queueIdx}
+                    handleSkipBack={() => shiftPreset(-1)}
+                    handleStart={start}
+                    handlePause={pause}
+                    handleSkipForward={() => shiftPreset(1)}
+                />
             </div>
-            <TimerControls
-                timerState={state}
-                handleStart={start}
-                handlePause={pause}
-                handleReset={reset}
-            />
-            <ProgressBar
-                presets={presets}
-                queue={queue}
-                queueIdx={queueIdx}
-            />
-            {state}
-            { time / preset.duration }
-            <br />{time}
-            <br />{preset.duration}
-        </div>
+        </ThemeContext.Provider>
     )
 }

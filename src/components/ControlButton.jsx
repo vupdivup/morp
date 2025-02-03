@@ -1,15 +1,19 @@
-export function ControlButton({
-    timerState,
-    disableStates,
-    handleClick,
-    children
-}) {
+import { useContext } from "react";
+import { ThemeContext } from "../contexts/ThemeContext";
+
+export function ControlButton({ icon, disable, handleClick }) {
+    const theme = useContext(ThemeContext);
+
+    const sheet = "/src/assets/icons/remix/remixicon.symbol.svg";
+
     return (
-        <button
-            onClick={handleClick}
-            disabled={disableStates.includes(timerState)}
+        <svg
+            className="remix control-button"
+            fill={ disable ? theme.color2 : "white" }
+            onClick={ handleClick }
+            style={{pointerEvents: disable ? "none" : "auto"}}
         >
-            {children}
-        </button>
+            <use href={`${sheet}#${icon}`} />
+        </svg>
     );
 }

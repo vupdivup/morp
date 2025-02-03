@@ -2,34 +2,52 @@ import { ControlButton } from "./ControlButton"
 
 export function TimerControls({
     timerState,
+    queueIdx,
+    handleSkipBack,
     handleStart,
     handlePause,
-    handleReset
+    handleSkipForward
 }) {
+    const controls = [
+        {
+            // TODO: only shift back to start of current preset if paused
+            icon: "ri-skip-back-fill",
+            render: true,
+            disable: timerState === "active" || queueIdx === 0,
+            handleClick: handleSkipBack
+        },
+        {
+            icon: "ri-play-fill",
+            render: timerState !== "active",
+            disable: false,
+            handleClick: handleStart
+        },
+        {
+            icon: "ri-pause-fill",
+            render: timerState === "active",
+            disable: false,
+            handleClick: handlePause
+        },
+        {
+            icon: "ri-skip-forward-fill",
+            render: true,
+            disable: timerState === "active",
+            handleClick: handleSkipForward
+        }
+    ]
+
+    const buttons = controls.filter(c => c.render).map((c, i) => {
+        return <ControlButton
+            key={i}
+            icon={c.icon}
+            disable={c.disable}
+            handleClick={c.handleClick}
+        />
+    });
+
     return (
-        // todo: refactor this with objects
-        <div>
-            <ControlButton
-                timerState={timerState}
-                disableStates={["active"]}
-                handleClick={handleStart}
-            >
-                Start
-            </ControlButton>
-            <ControlButton
-                timerState={timerState}
-                disableStates={["inactive", "paused"]}
-                handleClick={handlePause}
-            >
-                Pause
-            </ControlButton>
-            <ControlButton
-                timerState={timerState}
-                disableStates={["active", "inactive"]}
-                handleClick={handleReset}
-            >
-                Reset
-            </ControlButton>
+        <div className="control-panel">
+            {buttons}
         </div>
     )
 }

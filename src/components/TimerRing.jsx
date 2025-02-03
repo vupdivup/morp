@@ -1,12 +1,15 @@
-import { useEffect, useRef, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
+import { ThemeContext } from "../contexts/ThemeContext";
 
 export function TimerVisual({ ratio }) {
+    const theme = useContext(ThemeContext);
+
     // clamp ratio since arc cannot draw full circles
     // TODO: draw circle instead
     ratio = ratio >= 1 ? .9999 : ratio;
 
     const viewBoxSize = 100;
-    const strokeWidth = 2; // TODO: strokeWidth in style?
+    const strokeWidth = 2;
 
     // circle origin
     const c = { x: viewBoxSize / 2, y: viewBoxSize / 2};
@@ -38,7 +41,14 @@ export function TimerVisual({ ratio }) {
 
     return (
         <svg className="ring" viewBox="0 0 100 100">
-            <circle cx={c.x} cy={c.y} r={radius} className="ring-background" strokeWidth={strokeWidth}/>
+            <circle
+                cx={c.x}
+                cy={c.y}
+                r={radius}
+                className="ring-background"
+                strokeWidth={strokeWidth}
+                stroke={theme.color2}
+            />
             <path
                 strokeWidth={strokeWidth}
                 d={d}

@@ -1,9 +1,16 @@
+import { useContext } from "react";
+import { ThemeContext } from "../contexts/ThemeContext";
+
 export function ProgressDot({ filled }) {
+    const theme = useContext(ThemeContext);
+
     return (
-        <svg className="progress-dot-container" viewBox="0 0 100 100">
-            <circle
-                className="progress-dot"
-                data-filled={filled}
+        <svg
+            className="progress-dot"
+            viewBox="0 0 100 100"
+            fill={filled ? "white" : theme.color2 }    
+        >
+            <circle 
                 cx="50"
                 cy="50"
                 r="50"
