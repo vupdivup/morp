@@ -1,6 +1,6 @@
 @font-face {
     font-family: Azeret Mono;
-    src: url(/src/assets/fonts/Azeret_Mono/Azeret_Mono.ttf);
+    src: url(/assets/fonts/Azeret_Mono/Azeret_Mono.ttf);
 }
 
 * {
@@ -17,6 +17,7 @@ body {
     display: flex;
     flex-direction: column;
     align-items: center;
+    gap: 12px;
     padding-top: 32px;
 }
 
@@ -33,17 +34,23 @@ body {
 
 .digits {
     font-family: Azeret Mono;
-    font-weight: 300;
+    font-weight: 200;
     font-size: 4rem;
-    transform: translateZ(0);
     text-align: center;
     position: relative;
-    margin-top: 24px;
+    margin-top: 12px;
 }
 
 .preset-name {
-    font-size: 1.5rem;
-    font-weight: 300;
+    font-size: 2rem;
+    font-weight: 200;
+}
+
+.digits, .preset-name {
+    -webkit-user-select: none;       
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
 }
 
 .ring {
@@ -54,6 +61,7 @@ body {
     bottom: 0;
 }
 
+/* TODO: organize this cmon */
 path {
     stroke-linecap: butt;
     stroke: white;
@@ -76,30 +84,24 @@ path {
     height: 8px;
 }
 
-@keyframes progress-dot-pop {
-    from {
-        transform: scale(1.1, 1.1);
-    }
-    to {
-        transform: scale(1, 1);
-    }
+.feather {
+    stroke-width: 1.5;
+    fill: none;
+    stroke-linecap: round;
+    stroke-linejoin: round;
 }
 
-.remix {
-    stroke: none;
-}
-
-.control-panel {
+.control-bar {
     display: flex;
     flex-direction: row;
     justify-content: center;
+    align-items: center;
     gap: 48px
 }
 
 .control-button {
-    width: 32px;
-    height: 32px;
     cursor: pointer;
+    transition: stroke .1s;
 }
 
 .control-button:hover {
@@ -107,7 +109,12 @@ path {
     transition: transform .1s;
 }
 
-.control-button[data-disabled="true"] {
-    fill: darkred;
-    transition: fill .1s;
+.control-button.large {
+    width: 40px;
+    height: 40px;
+}
+
+.control-button.small {
+    width: 32px;
+    height: 32px;
 }

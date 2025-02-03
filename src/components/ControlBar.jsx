@@ -1,6 +1,6 @@
 import { ControlButton } from "./ControlButton"
 
-export function TimerControls({
+export function ControlBar({
     timerState,
     queueIdx,
     handleSkipBack,
@@ -11,27 +11,31 @@ export function TimerControls({
     const controls = [
         {
             // TODO: only shift back to start of current preset if paused
-            icon: "ri-skip-back-fill",
+            icon: "skip-back",
             render: true,
             disable: timerState === "active" || queueIdx === 0,
+            enlarge: false,
             handleClick: handleSkipBack
         },
         {
-            icon: "ri-play-fill",
+            icon: "play",
             render: timerState !== "active",
             disable: false,
+            enlarge: true,
             handleClick: handleStart
         },
         {
-            icon: "ri-pause-fill",
+            icon: "pause",
             render: timerState === "active",
             disable: false,
+            enlarge: true,
             handleClick: handlePause
         },
         {
-            icon: "ri-skip-forward-fill",
+            icon: "skip-forward",
             render: true,
             disable: timerState === "active",
+            enlarge: false,
             handleClick: handleSkipForward
         }
     ]
@@ -41,12 +45,13 @@ export function TimerControls({
             key={i}
             icon={c.icon}
             disable={c.disable}
+            enlarge={c.enlarge}
             handleClick={c.handleClick}
         />
     });
 
     return (
-        <div className="control-panel">
+        <div className="control-bar">
             {buttons}
         </div>
     )

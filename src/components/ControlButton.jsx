@@ -1,19 +1,19 @@
 import { useContext } from "react";
 import { ThemeContext } from "../contexts/ThemeContext";
 
-export function ControlButton({ icon, disable, handleClick }) {
+export function ControlButton({ icon, disable, enlarge, handleClick }) {
     const theme = useContext(ThemeContext);
 
-    const sheet = "/src/assets/icons/remix/remixicon.symbol.svg";
+    const path = "/assets/icons/feather/feather-sprite.svg";
 
     return (
         <svg
-            className="remix control-button"
-            fill={ disable ? theme.color2 : "white" }
-            onClick={ handleClick }
+            className={`feather control-button ${enlarge ? "large" : "small"}`}
+            onClick={handleClick}
+            stroke={disable ? theme.color2 : "white"}
             style={{pointerEvents: disable ? "none" : "auto"}}
         >
-            <use href={`${sheet}#${icon}`} />
+            <use href={`${path}#${icon}`} />
         </svg>
     );
 }

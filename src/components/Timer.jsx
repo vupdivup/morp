@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { ThemeContext } from "../contexts/ThemeContext";
 import { Digits } from "./Digits";
 import { ProgressBar } from "./ProgressBar";
-import { TimerControls } from "./TimerControls";
+import { ControlBar } from "./ControlBar";
 import { TimerVisual } from "./TimerRing";
 
 export function TimerWrapper() {
@@ -123,7 +123,7 @@ export function TimerWrapper() {
                     />
                     <TimerVisual ratio={ time / preset.duration }/>
                 </div>
-                <TimerControls
+                <ControlBar
                     timerState={state}
                     queueIdx={queueIdx}
                     handleSkipBack={() => shiftPreset(-1)}
@@ -132,7 +132,6 @@ export function TimerWrapper() {
                     handleSkipForward={() => shiftPreset(1)}
                 />
             </div>
-            {state}
         </ThemeContext.Provider>
     )
 }

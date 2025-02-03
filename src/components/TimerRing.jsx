@@ -9,7 +9,7 @@ export function TimerVisual({ ratio }) {
     ratio = ratio >= 1 ? .9999 : ratio;
 
     const viewBoxSize = 100;
-    const strokeWidth = 2;
+    const strokeWidth = 1.5;
 
     // circle origin
     const c = { x: viewBoxSize / 2, y: viewBoxSize / 2};
