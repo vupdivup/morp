@@ -15,7 +15,7 @@ export function TimerWrapper() {
     const presets = [
         {
             name: "Focus",
-            duration: 2,
+            duration: 25 * 60,
             drawProgress: true,
             color1: "#972d2d",
             color2: "#641a1a"
@@ -59,6 +59,13 @@ export function TimerWrapper() {
         }
     });
 
+    useEffect(() => {
+        window.addEventListener("keydown", handleKeydown);
+        return () => {
+            window.removeEventListener("keydown", handleKeydown);
+        }
+    });
+
     const theme = { color1: preset.color1, color2: preset.color2 };
 
     document.body.style.backgroundColor = theme.color1;
@@ -88,8 +95,17 @@ export function TimerWrapper() {
     function handleMessage(e) {
         const newTime = time - 1;
 
-        if (newTime === 0) shiftPreset(1);
-        else setTime(time => newTime);
+        if (newTime === 0) {
+            shiftPreset(1);
+        }
+        else { setTime(time - 1); };
+    }
+
+    function handleKeydown(e) {
+        if (e.code !== "Space") return;
+
+        if (state === "active") { pause(); }
+        else { start(); }
     }
 
     return (
@@ -97,7 +113,7 @@ export function TimerWrapper() {
             <div className="timer">
                 <div className="timer-face">
                     <Digits time={time} />
-                    <div className="presetName">
+                    <div className="preset-name">
                         {preset.name}
                     </div>
                     <ProgressBar
@@ -116,6 +132,7 @@ export function TimerWrapper() {
                     handleSkipForward={() => shiftPreset(1)}
                 />
             </div>
+            {state}
         </ThemeContext.Provider>
     )
 }

@@ -9,13 +9,15 @@
 }
 
 body {
-    transition: background-color .25s;
+    margin: 0;
+    padding: 0;
 }
 
 .timer {
     display: flex;
     flex-direction: column;
     align-items: center;
+    padding-top: 32px;
 }
 
 .timer-face {
@@ -31,16 +33,17 @@ body {
 
 .digits {
     font-family: Azeret Mono;
-    font-weight: 500;
-    font-size: 72px;
+    font-weight: 300;
+    font-size: 4rem;
     transform: translateZ(0);
     text-align: center;
     position: relative;
+    margin-top: 24px;
 }
 
-.presetName {
-    font-size: 32px;
-    font-weight: 400;
+.preset-name {
+    font-size: 1.5rem;
+    font-weight: 300;
 }
 
 .ring {
@@ -52,7 +55,7 @@ body {
 }
 
 path {
-    stroke-linecap: round;
+    stroke-linecap: butt;
     stroke: white;
     fill: none;
 }
@@ -64,7 +67,8 @@ path {
 .progress-bar {
     display: flex;
     flex-direction: row;
-    gap: 12px;
+    gap: 16px;
+    margin-top: 12px;
 }
 
 .progress-dot {
