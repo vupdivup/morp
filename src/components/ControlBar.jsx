@@ -13,7 +13,7 @@ export function ControlBar({
             // TODO: only shift back to start of current preset if paused
             icon: "skip-back",
             render: true,
-            disable: timerState === "active" || queueIdx === 0,
+            disable: timerState === "active",
             enlarge: false,
             handleClick: handleSkipBack
         },

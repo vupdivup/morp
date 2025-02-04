@@ -5,10 +5,12 @@ import { Digits } from "./Digits";
 import { ProgressBar } from "./ProgressBar";
 import { Ring } from "./Ring";
 
+// pomodoro mode presets
 const presets = [
     {
         name: "Focus",
         duration: 3,
+        autostart: false,
         drawProgress: true,
         color1: "#972d2d",
         color2: "#641a1a",
@@ -17,6 +19,7 @@ const presets = [
     {
         name: "Short Break",
         duration: 3,
+        autostart: true,
         drawProgress: false,
         color1: "#467638",
         color2: "#205220",
@@ -25,6 +28,7 @@ const presets = [
     {
         name: "Long Break",
         duration: 4,
+        autostart: true,
         drawProgress: false,
         color1: "#3f5883",
         color2: "#1d3964",
@@ -35,6 +39,7 @@ const presets = [
 // ordered list of presets in cycle
 const queue = [0, 1, 0, 1, 0, 1, 0, 2];
 
+// sound effect collection
 const sfx = {
     focus: new Audio("/assets/sfx/focus.wav"),
     break: new Audio("/assets/sfx/break.wav")
@@ -43,13 +48,17 @@ const sfx = {
 export function Timer() {
     const [state, setState] = useState("inactive");
 
+    // index of current preset within preset queue
     const [queueIdx, setQueueIdx] = useState(0);
 
     const [worker, setWorker] = useState(null);
 
+    // preset for current period
     const preset = presets[queue[queueIdx]];
 
     const [time, setTime] = useState(preset.duration);
+
+    const theme = { color1: preset.color1, color2: preset.color2 };
 
     // terminate timer worker if no longer active
     useEffect(() => {
@@ -69,14 +78,13 @@ export function Timer() {
         }
     });
 
+    // reattach keydown handler every render as well
     useEffect(() => {
         window.addEventListener("keydown", handleKeydown);
         return () => {
             window.removeEventListener("keydown", handleKeydown);
         }
     });
-
-    const theme = { color1: preset.color1, color2: preset.color2 };
 
     document.body.style.backgroundColor = theme.color1;
 
@@ -93,21 +101,54 @@ export function Timer() {
         setState("paused");
     }
 
-    function shiftPreset(i) {
-        const newQueueIdx = (queueIdx + i) % queue.length;
+    function reset() {
+        setTime(preset.duration);
+        setState("inactive");
+    }
+
+    // increment queue index to switch preset
+    function shiftPreset(i, autostart) {
+        let newQueueIdx;
+        
+        if (queueIdx + i < 0) {
+            // loop queue from reverse direction
+            newQueueIdx = queue.length - 1;
+        } else {
+            newQueueIdx = (queueIdx + i) % queue.length;
+        }
+        
         const newPreset = presets[queue[newQueueIdx]];
 
         setQueueIdx(newQueueIdx);
         setTime(newPreset.duration);
-        setState("inactive");
+
+        // autostart if needed
+        setState(
+            newPreset.autostart && autostart ?
+            "active" : "inactive"
+        );
+    }
+
+    function skipForward() {
+        shiftPreset(1, false);
+    }
+
+    function skipBack() {
+        // reset but don't skip backwards if timer started
+        if (state === "paused" && time < preset.duration) {
+            reset();
+        } else {
+            shiftPreset(-1, false);
+        }
     }
 
     function handleMessage(e) {
         const newTime = time - 1;
 
         if (newTime === 0) {
+            // progress queue if timer has depleted
             sfx[preset.sound].play();
-            shiftPreset(1);
+            shiftPreset(1, true);
         }
         else {
             setTime(time - 1);
@@ -115,10 +156,27 @@ export function Timer() {
     }
 
     function handleKeydown(e) {
-        if (e.code !== "Space") return;
-
-        if (state === "active") { pause(); }
-        else { start(); }
+        switch(e.code) {
+            // play/pause with spacebar
+            case "Space":
+                if (state === "active") {
+                    pause();
+                } else {
+                    start();
+                }
+                return;
+            // arrow keys to skip back and forth
+            case "ArrowLeft":
+                if (state !== "active") {
+                    skipBack();
+                }
+                return;
+            case "ArrowRight":
+                if (state !== "active") {
+                    skipForward();
+                }
+                return;
+        }
     }
 
     return (
@@ -139,10 +197,10 @@ export function Timer() {
                 <ControlBar
                     timerState={state}
                     queueIdx={queueIdx}
-                    handleSkipBack={() => shiftPreset(-1)}
+                    handleSkipBack={skipBack}
                     handleStart={start}
                     handlePause={pause}
-                    handleSkipForward={() => shiftPreset(1)}
+                    handleSkipForward={skipForward}
                 />
             </div>
         </ThemeContext.Provider>
