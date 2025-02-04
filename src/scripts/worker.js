@@ -3,8 +3,15 @@ const tickInterval = 1000;
 
 let tickCount = 0;
 
-setInterval(tick, 1000);
+setTimeout(tick, tickInterval);
 
 function tick() {
+    tickCount++;
+
     postMessage(null);
+
+    const elapsed = Date.now() - startTime;
+    const drift = elapsed - tickInterval * tickCount
+
+    setTimeout(tick, tickInterval - drift);
 }
