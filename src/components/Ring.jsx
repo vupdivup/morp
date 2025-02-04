@@ -1,8 +1,10 @@
-import { useContext, useEffect, useRef, useState } from "react";
+import { useContext } from "react";
 import { ThemeContext } from "../contexts/ThemeContext";
 
-export function TimerVisual({ ratio }) {
+export function Ring({ time, preset }) {
     const theme = useContext(ThemeContext);
+
+    let ratio = time / preset.duration
 
     // clamp ratio since arc cannot draw full circles
     // TODO: draw circle instead

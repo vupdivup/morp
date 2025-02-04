@@ -1,9 +1,9 @@
-import { useEffect, useState } from "react";
+import { useDeferredValue, useEffect, useState } from "react";
 import { ThemeContext } from "../contexts/ThemeContext";
 import { Digits } from "./Digits";
 import { ProgressBar } from "./ProgressBar";
 import { ControlBar } from "./ControlBar";
-import { TimerVisual } from "./TimerRing";
+import { Ring } from "./Ring";
 
 export function TimerWrapper() {
     const [state, setState] = useState("inactive");
@@ -15,7 +15,7 @@ export function TimerWrapper() {
     const presets = [
         {
             name: "Focus",
-            duration: 25 * 60,
+            duration: 300,
             drawProgress: true,
             color1: "#972d2d",
             color2: "#641a1a"
@@ -45,7 +45,9 @@ export function TimerWrapper() {
 
     // terminate timer worker if no longer active
     useEffect(() => {
-        if (state !== "active") worker?.terminate();
+        if (state !== "active") {
+            worker?.terminate();
+        }
     }, [state]);
 
     // reattach worker message handler every render to access latest state
@@ -98,7 +100,9 @@ export function TimerWrapper() {
         if (newTime === 0) {
             shiftPreset(1);
         }
-        else { setTime(time - 1); };
+        else {
+            setTime(time - 1);
+        };
     }
 
     function handleKeydown(e) {
@@ -121,7 +125,7 @@ export function TimerWrapper() {
                         queue={queue}
                         queueIdx={queueIdx}
                     />
-                    <TimerVisual ratio={ time / preset.duration }/>
+                    <Ring time={time} preset={preset} />
                 </div>
                 <ControlBar
                     timerState={state}

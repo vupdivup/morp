@@ -96,7 +96,8 @@ path {
     flex-direction: row;
     justify-content: center;
     align-items: center;
-    gap: 48px
+    gap: 48px;
+    margin-left: 12px;
 }
 
 .control-button {
