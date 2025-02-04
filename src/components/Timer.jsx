@@ -1,4 +1,4 @@
-import { useDeferredValue, useEffect, useState } from "react";
+import { useDeferredValue, useEffect, useState, useRef } from "react";
 import { ThemeContext } from "../contexts/ThemeContext";
 import { Digits } from "./Digits";
 import { ProgressBar } from "./ProgressBar";
@@ -15,24 +15,27 @@ export function TimerWrapper() {
     const presets = [
         {
             name: "Focus",
-            duration: 300,
+            duration: 3,
             drawProgress: true,
             color1: "#972d2d",
-            color2: "#641a1a"
+            color2: "#641a1a",
+            sound: "break"
         },
         {
             name: "Short Break",
             duration: 3,
             drawProgress: false,
             color1: "#467638",
-            color2: "#205220"
+            color2: "#205220",
+            sound: "focus"
         },
         {
             name: "Long Break",
             duration: 4,
             drawProgress: false,
             color1: "#3f5883",
-            color2: "#1d3964"
+            color2: "#1d3964",
+            sound: "focus"
         }
     ];
 
@@ -68,6 +71,11 @@ export function TimerWrapper() {
         }
     });
 
+    const sfx = useRef({
+        focus: new Audio("/assets/sfx/focus.wav"),
+        break: new Audio("/assets/sfx/break.wav")
+    });
+
     const theme = { color1: preset.color1, color2: preset.color2 };
 
     document.body.style.backgroundColor = theme.color1;
@@ -98,6 +106,7 @@ export function TimerWrapper() {
         const newTime = time - 1;
 
         if (newTime === 0) {
+            sfx.current[preset.sound].play();
             shiftPreset(1);
         }
         else {
