@@ -61,30 +61,32 @@ export function Timer() {
 
     const theme = { color1: preset.color1, color2: preset.color2 };
 
-    // terminate timer worker if no longer active
+    // terminate worker if timer is no longer active
     useEffect(() => {
-        if (state !== "active") {
-            worker?.terminate();
+        if (worker && state !== "active") {
+            worker.terminate();
         }
     }, [state]);
 
+    // terminate old worker if new one has been assigned (safeguard)
+    useEffect(() => {
+        return () => {
+            if (worker) {
+                worker.terminate();
+            }
+        }
+    }, [worker]);
+
     // reattach worker message handler every render to access latest state
     useEffect(() => {
-        if (!worker) return;
-
-        worker.addEventListener("message", handleMessage);
-        
-        return () => {
-            worker.removeEventListener("message", handleMessage);
-        }
+        if (worker) {
+            worker.onmessage = handleMessage;
+        };  
     });
 
     // reattach keydown handler every render as well
     useEffect(() => {
-        window.addEventListener("keydown", handleKeydown);
-        return () => {
-            window.removeEventListener("keydown", handleKeydown);
-        }
+        window.onkeydown = handleKeydown;
     });
 
     document.body.style.backgroundColor = theme.color1;
