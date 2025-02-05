@@ -2,7 +2,6 @@ import { ControlButton } from "./ControlButton"
 
 export function ControlBar({
     timerState,
-    queueIdx,
     handleSkipBack,
     handleStart,
     handlePause,
@@ -10,7 +9,6 @@ export function ControlBar({
 }) {
     const controls = [
         {
-            // TODO: only shift back to start of current preset if paused
             icon: "skip-back",
             render: true,
             disable: timerState === "active",

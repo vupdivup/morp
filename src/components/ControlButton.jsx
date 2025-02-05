@@ -4,7 +4,7 @@ import { ThemeContext } from "../contexts/ThemeContext";
 export function ControlButton({ icon, disable, enlarge, handleClick }) {
     const theme = useContext(ThemeContext);
 
-    const path = "/assets/icons/feather/feather-sprite.svg";
+    const path = "/morp/assets/icons/feather/feather-sprite.svg";
 
     return (
         <svg

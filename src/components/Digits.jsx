@@ -1,4 +1,4 @@
-import { useEffect, useLayoutEffect } from "react";
+import { useLayoutEffect } from "react";
 
 export function Digits({ time }) {
     const minutes = Math.floor(time / 60);
@@ -9,9 +9,10 @@ export function Digits({ time }) {
 
     const text = minutesStr + ":" + secondsStr;
 
+    // set document title to display digits
     useLayoutEffect(() => {
         document.title = "Morp " + text;
-    });
+    }, [text]);
 
     return (
         <div className="digits">

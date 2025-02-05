@@ -30,8 +30,8 @@ const presets = [
         duration: 15 * 60,
         autostart: true,
         drawProgress: false,
-        color1: "#3e3e8e",
-        color2: "#2d2b77",
+        color1: "#3a4878",
+        color2: "#252e60",
         sound: "focus"
     }
 ];
@@ -41,8 +41,8 @@ const queue = [0, 1, 0, 1, 0, 1, 0, 2];
 
 // sound effect collection
 const sfx = {
-    focus: new Audio("/assets/sfx/focus.wav"),
-    break: new Audio("/assets/sfx/break.wav")
+    focus: new Audio("/morp/assets/sfx/focus.wav"),
+    break: new Audio("/morp/assets/sfx/break.wav")
 };
 
 export function Timer() {
