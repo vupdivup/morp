@@ -9,29 +9,29 @@ import { Ring } from "./Ring";
 const presets = [
     {
         name: "Focus",
-        duration: 3,
+        duration: 25 * 60,
         autostart: false,
         drawProgress: true,
-        color1: "#972d2d",
-        color2: "#641a1a",
+        color1: "#8c2c2c",
+        color2: "#681f1f",
         sound: "break"
     },
     {
         name: "Short Break",
-        duration: 3,
+        duration: 5 * 60,
         autostart: true,
         drawProgress: false,
-        color1: "#467638",
-        color2: "#205220",
+        color1: "#2f6a2f",
+        color2: "#145025",
         sound: "focus"
     },
     {
         name: "Long Break",
-        duration: 4,
+        duration: 15 * 60,
         autostart: true,
         drawProgress: false,
-        color1: "#3f5883",
-        color2: "#1d3964",
+        color1: "#3e3e8e",
+        color2: "#2d2b77",
         sound: "focus"
     }
 ];
@@ -56,6 +56,7 @@ export function Timer() {
     // preset for current period
     const preset = presets[queue[queueIdx]];
 
+    // time left, in seconds
     const [time, setTime] = useState(preset.duration);
 
     const theme = { color1: preset.color1, color2: preset.color2 };
@@ -91,7 +92,7 @@ export function Timer() {
     function start() {
         setState("active");
         
-        let workerURL = new URL("/src/scripts/worker.js", import.meta.url);
+        let workerURL = new URL("/src/workers/worker.js", import.meta.url);
         let worker = new Worker(workerURL);
 
         setWorker(worker);

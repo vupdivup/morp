@@ -17,11 +17,13 @@ body {
     display: flex;
     flex-direction: column;
     align-items: center;
+    justify-content: start;
     gap: 12px;
     padding-top: 32px;
 }
 
 .timer-face {
+    aspect-ratio: 1 / 1;
     display: flex;
     flex-direction: column;
     width: 320px;
@@ -35,21 +37,19 @@ body {
 .digits {
     font-family: Azeret Mono;
     font-weight: 200;
-    font-size: 4rem;
+    font-size: 64px;
     text-align: center;
     position: relative;
-    margin-top: 12px;
+    margin-top: 16px;
 }
 
 .preset-name {
-    font-size: 2rem;
+    font-size: 32px;
     font-weight: 200;
 }
 
 .digits, .preset-name {
-    -webkit-user-select: none;       
-    -moz-user-select: none;
-    -ms-user-select: none;
+    -webkit-user-select: none;
     user-select: none;
 }
 
@@ -61,8 +61,7 @@ body {
     bottom: 0;
 }
 
-/* TODO: organize this cmon */
-path {
+.ring-fill {
     stroke-linecap: butt;
     stroke: white;
     fill: none;
@@ -84,6 +83,19 @@ path {
     height: 8px;
 }
 
+.progress-dot[fill="white"] {
+    animation: .25s ease-out pop;
+}
+
+@keyframes pop {
+    from {
+        transform: scale(1.25, 1.25);
+    }
+    to {
+        transform: scale(1, 1);
+    }
+}
+
 .feather {
     stroke-width: 1.5;
     fill: none;
@@ -97,7 +109,6 @@ path {
     justify-content: center;
     align-items: center;
     gap: 48px;
-    margin-left: 12px;
 }
 
 .control-button {

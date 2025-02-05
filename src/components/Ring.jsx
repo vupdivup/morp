@@ -7,7 +7,6 @@ export function Ring({ time, preset }) {
     let ratio = time / preset.duration
 
     // clamp ratio since arc cannot draw full circles
-    // TODO: draw circle instead
     ratio = ratio >= 1 ? .9999 : ratio;
 
     const viewBoxSize = 100;
@@ -20,6 +19,8 @@ export function Ring({ time, preset }) {
 
     const angle = ratio * 360;
 
+    // switch direction and rotate starting axis 90 degrees to the left
+    // this way, the starting axis is the Y axis instead of X
     const rads = degToRad(-angle + 90);
 
     // starting point of arc
@@ -52,6 +53,7 @@ export function Ring({ time, preset }) {
                 stroke={theme.color2}
             />
             <path
+                className="ring-fill"
                 strokeWidth={strokeWidth}
                 d={d}
             />

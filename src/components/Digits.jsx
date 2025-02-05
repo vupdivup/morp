@@ -10,7 +10,7 @@ export function Digits({ time }) {
     const text = minutesStr + ":" + secondsStr;
 
     useLayoutEffect(() => {
-        document.title = text;
+        document.title = "Morp " + text;
     });
 
     return (
